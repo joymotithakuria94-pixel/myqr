@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redirecting...</title>
+</head>
+<body style="font-family: system-ui, sans-serif; text-align: center; padding: 40px;">
+  <p id="msg">Redirecting...</p>
+  <script>
+    (async () => {
+      const msg = document.getElementById('msg');
+      const code = new URLSearchParams(location.search).get('c');
+      try {
+        const res = await fetch('links.json', { cache: 'no-store' });
+        const links = await res.json();
+        const url = links[code];
+        // Only allow normal web links
+        if (url && /^https?:\/\//i.test(url)) {
+          location.replace(url);
+          return;
+        }
+        msg.textContent = 'This QR link was not found.';
+      } catch (e) {
+        msg.textContent = 'Could not load the link. Please try again.';
+      }
+    })();
+  </script>
+</body>
+</html>
